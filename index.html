@@ -3,73 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>可愛轉址小幫手</title>
+    <title>清新轉址小幫手 - 2.1</title>
     <!-- Google Fonts: Noto Sans TC -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS (用於快速佈局) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome (圖示) -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        :root {
+            --primary: #6366f1; /* 靛藍色 */
+            --primary-light: #eef2ff;
+            --primary-hover: #4f46e5;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
         body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #FFF5F7; /* 柔和粉底色 */
-            color: #4A4A4A;
+            font-family: 'Noto Sans TC', 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: #334155;
+            min-height: 100vh;
         }
-        /* 自定義可愛元件風格 */
-        .btn-cute {
-            transition: all 0.2s;
-            box-shadow: 0 4px 0 #EAB8C5;
+        /* 玻璃擬態效果 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px -5px rgba(99, 102, 241, 0.05);
         }
-        .btn-cute:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 #EAB8C5;
+        .nav-blur {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
         }
-        .card-shadow {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        /* 按鈕微動效 */
+        .btn-modern {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        /* Toggle Switch Style */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #F472B6;
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -8px rgba(99, 102, 241, 0.3);
         }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #F472B6;
+        .btn-modern:active {
+            transform: translateY(0);
         }
-        
+        /* 自定義捲軸 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
         /* 載入動畫 */
         .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #FF8FAB;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 24px;
+            height: 24px;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* 切換開關 */
+        .toggle-dot {
+            transition: all 0.3s ease-in-out;
         }
-
-        /* 模態視窗過渡 */
-        .modal-enter {
-            opacity: 0;
-            transform: scale(0.9);
+        input:checked ~ .toggle-dot {
+            transform: translateX(100%);
+            background-color: #ffffff;
         }
-        .modal-enter-active {
-            opacity: 1;
-            transform: scale(1);
-            transition: opacity 0.3s, transform 0.3s;
+        input:checked ~ .toggle-bg {
+            background-color: var(--primary);
         }
         
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.4s ease-out forwards;
+        }
+
         /* Help Modal Steps */
         .step-circle {
             width: 24px;
             height: 24px;
-            background-color: #FCE7F3;
-            color: #DB2777;
+            background-color: #EEF2FF;
+            color: #6366F1;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
@@ -79,294 +103,280 @@
             margin-right: 8px;
             flex-shrink: 0;
         }
-        
-        /* Footer Links */
-        .footer-link {
-            color: #F472B6;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .footer-link:hover {
-            color: #DB2777;
-            text-decoration: underline;
-        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center">
+<body class="flex flex-col">
 
-    <!-- 頂部導覽列 -->
-    <nav class="w-full bg-white shadow-sm p-4 sticky top-0 z-40">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-2 text-pink-500 font-bold text-xl cursor-pointer" onclick="ui.switchView('dashboard-view')">
-                <i class="fa-solid fa-link"></i> 轉址小幫手
+    <!-- 導覽列 -->
+    <nav class="w-full nav-blur shadow-sm p-4 sticky top-0 z-40 border-b border-slate-100">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3 text-indigo-600 font-extrabold text-2xl cursor-pointer tracking-tight" onclick="ui.switchView('dashboard-view')">
+                <div class="bg-indigo-600 text-white p-2 rounded-xl shadow-lg shadow-indigo-100">
+                    <i class="fa-solid fa-link text-base"></i>
+                </div>
+                <span>轉址小幫手</span>
             </div>
-            <div class="flex gap-2">
-                <button onclick="ui.openModal('helpModal')" class="bg-blue-100 text-blue-500 px-4 py-2 rounded-full font-bold hover:bg-blue-200 transition text-sm">
+            <div class="flex gap-3">
+                <button onclick="ui.openModal('helpModal')" class="hidden md:flex items-center gap-2 text-slate-500 px-4 py-2 rounded-xl font-bold hover:bg-slate-100 transition text-sm">
                     <i class="fa-solid fa-circle-question"></i> 設定教學
                 </button>
-                <button onclick="ui.checkAdminLogin()" class="bg-purple-100 text-purple-500 px-4 py-2 rounded-full font-bold hover:bg-purple-200 transition text-sm">
-                    <i class="fa-solid fa-user-shield"></i> 後台
+                <button onclick="ui.checkAdminLogin()" class="bg-indigo-50 text-indigo-600 px-5 py-2 rounded-xl font-bold hover:bg-indigo-100 transition text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-user-shield"></i> <span id="admin-btn-text">管理後台</span>
                 </button>
             </div>
         </div>
     </nav>
 
     <!-- 主要內容區 -->
-    <main id="app-content" class="w-full max-w-2xl p-4 flex-grow relative pb-20">
+    <main id="app-content" class="w-full max-w-6xl mx-auto p-6 flex-grow pb-24">
         
         <!-- 狀態: 載入中 -->
-        <div id="loading-view" class="hidden flex flex-col items-center justify-center py-20">
-            <div class="loader mb-4"></div>
-            <p class="text-gray-400">正在連線 Firebase...</p>
+        <div id="loading-view" class="flex flex-col items-center justify-center py-32">
+            <div class="loader w-12 h-12 border-4 mb-6"></div>
+            <p class="text-slate-400 font-medium animate-pulse">正在存取雲端資料...</p>
         </div>
 
         <!-- 狀態: 未設定 -->
-        <div id="setup-view" class="hidden text-center py-10">
-            <div class="bg-white p-8 rounded-3xl card-shadow">
-                <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" alt="Setup" class="w-32 mx-auto mb-6 opacity-80">
-                <h2 class="text-2xl font-bold text-gray-700 mb-2">尚未設定資料庫</h2>
-                <p class="text-gray-500 mb-6">請下載本程式原始碼，並依照教學填入 Firebase 設定。</p>
-                <button onclick="ui.openModal('helpModal')" class="bg-pink-400 text-white px-8 py-3 rounded-full font-bold btn-cute text-lg hover:bg-pink-500">
+        <div id="setup-view" class="hidden text-center py-20 animate-fade-in">
+            <div class="glass-card p-10 rounded-[2.5rem] max-w-md mx-auto">
+                <div class="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-cloud-bolt text-indigo-400 text-4xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 mb-4">資料庫尚未連線</h2>
+                <p class="text-slate-500 mb-8 leading-relaxed">請在 HTML 原始碼中填入您的 Firebase 設定資訊以開始使用。</p>
+                <button onclick="ui.openModal('helpModal')" class="w-full bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold btn-modern text-lg">
                     查看設定教學
                 </button>
             </div>
         </div>
 
-        <!-- 狀態: 主控台 (搜尋與列表) -->
-        <div id="dashboard-view" class="hidden relative min-h-[50vh]">
-            <!-- 搜尋與頭部 -->
-            <div class="mb-6 sticky top-0 bg-[#FFF5F7] z-10 py-2">
-                <div class="flex items-center justify-between mb-2 px-2">
-                    <h3 class="text-lg font-bold text-gray-600">公開連結列表</h3>
-                    <span id="link-count" class="text-xs bg-pink-100 text-pink-500 px-2 py-1 rounded-full">0 個連結</span>
+        <!-- 狀態: 主控台 (多欄卡片列表) -->
+        <div id="dashboard-view" class="hidden animate-fade-in">
+            <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div class="flex-grow max-w-2xl">
+                    <h3 class="text-3xl font-black text-slate-800 mb-4 tracking-tight">探索捷徑</h3>
+                    <div class="relative group">
+                        <i class="fa-solid fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></i>
+                        <input type="text" id="search-input" oninput="app.handleSearch()" placeholder="搜尋關鍵字或備註說明..." 
+                            class="w-full bg-white border-2 border-slate-50 rounded-[1.5rem] pl-14 pr-6 py-4 focus:outline-none focus:border-indigo-200 transition shadow-sm text-lg">
+                    </div>
                 </div>
-                <div class="relative">
-                    <i class="fa-solid fa-search absolute left-4 top-3 text-gray-400"></i>
-                    <input type="text" id="search-input" oninput="app.handleSearch()" placeholder="搜尋連結名稱、網址或備註..." 
-                        class="w-full bg-white border-2 border-pink-100 rounded-2xl pl-10 pr-4 py-2 focus:outline-none focus:border-pink-300 transition shadow-sm">
+                <div class="flex items-center gap-2 bg-indigo-50 text-indigo-600 px-4 py-2 rounded-2xl self-start md:self-center font-bold text-sm border border-indigo-100">
+                    <i class="fa-solid fa-hashtag"></i> <span id="link-count">0</span> 個公開項目
                 </div>
             </div>
 
-            <!-- 連結列表容器 -->
-            <div id="links-list" class="space-y-3 pb-8">
-                <!-- 動態生成內容 -->
+            <!-- 連結列表 (Grid 佈局) -->
+            <div id="links-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 動態內容 -->
             </div>
         </div>
 
         <!-- 狀態: 管理員登入 -->
-        <div id="admin-login-view" class="hidden text-center py-10">
-            <div class="bg-white p-8 rounded-3xl card-shadow max-w-sm mx-auto">
-                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-purple-500 text-2xl mx-auto mb-4">
-                    <i class="fa-solid fa-lock"></i>
+        <div id="admin-login-view" class="hidden py-20">
+            <div class="glass-card p-10 rounded-[2.5rem] max-w-sm mx-auto text-center">
+                <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-400 text-3xl mx-auto mb-6">
+                    <i class="fa-solid fa-key"></i>
                 </div>
-                <h2 class="text-xl font-bold text-gray-700 mb-4">管理員登入</h2>
-                <input type="password" id="admin-password" placeholder="請輸入密碼" 
-                    class="w-full bg-gray-50 border-2 border-gray-100 rounded-xl px-4 py-2 mb-4 focus:outline-none focus:border-purple-300 transition text-center">
-                <button onclick="app.verifyAdmin()" class="w-full bg-purple-500 text-white py-2 rounded-xl font-bold btn-cute hover:bg-purple-600">
-                    登入後台
+                <h2 class="text-2xl font-bold text-slate-800 mb-6">管理員驗證</h2>
+                <div class="mb-6">
+                    <input type="password" id="admin-password" placeholder="請輸入管理密碼" 
+                        class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:border-indigo-300 transition text-center text-lg">
+                </div>
+                <button onclick="app.verifyAdmin()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold btn-modern hover:bg-black">
+                    確認登入
                 </button>
-                <button onclick="ui.switchView('dashboard-view')" class="mt-4 text-sm text-gray-400 hover:text-gray-600">返回前台</button>
+                <button onclick="ui.switchView('dashboard-view')" class="mt-6 text-sm text-slate-400 font-medium hover:text-indigo-500 transition">返回首頁</button>
             </div>
         </div>
 
-        <!-- 狀態: 管理後台 (列表與操作) -->
-        <div id="admin-dashboard-view" class="hidden relative min-h-[50vh]">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold text-purple-600">管理後台</h2>
-                <button onclick="app.prepareCreate()" class="bg-pink-400 text-white px-4 py-2 rounded-xl font-bold btn-cute hover:bg-pink-500 text-sm">
-                    <i class="fa-solid fa-plus"></i> 新增轉址
+        <!-- 狀態: 管理後台 -->
+        <div id="admin-dashboard-view" class="hidden">
+            <div class="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
+                <div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">後台管理</h2>
+                    <p class="text-slate-400 text-sm">監控連結流量與編輯規則</p>
+                </div>
+                <button onclick="app.prepareCreate()" class="w-full md:w-auto bg-indigo-600 text-white px-8 py-3 rounded-2xl font-bold btn-modern flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus-circle"></i> 新增轉址
                 </button>
             </div>
 
-            <div class="bg-white rounded-3xl card-shadow overflow-hidden">
+            <div class="glass-card rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-gray-500">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                            <tr>
-                                <th class="px-4 py-3">名稱 / ID</th>
-                                <th class="px-4 py-3 text-center">狀態</th>
-                                <th class="px-4 py-3 text-center">點擊</th>
-                                <th class="px-4 py-3 text-right">操作</th>
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="bg-slate-50/50 text-slate-500 text-xs font-bold uppercase tracking-wider">
+                                <th class="px-6 py-5">連結名稱與 ID</th>
+                                <th class="px-6 py-5">原始網址</th>
+                                <th class="px-6 py-5 text-center">狀態</th>
+                                <th class="px-6 py-5 text-center">點擊數</th>
+                                <th class="px-6 py-5 text-right">管理</th>
                             </tr>
                         </thead>
-                        <tbody id="admin-list-body">
-                            <!-- 管理列表內容 -->
+                        <tbody id="admin-list-body" class="divide-y divide-slate-100">
+                            <!-- 內容由 JS 生成 -->
                         </tbody>
                     </table>
                 </div>
             </div>
-            <button onclick="ui.switchView('dashboard-view')" class="mt-6 w-full py-3 text-gray-400 hover:text-gray-600 font-bold border-2 border-dashed border-gray-200 rounded-xl">
-                <i class="fa-solid fa-arrow-left"></i> 回到前台
-            </button>
+            
+            <div class="mt-10 text-center">
+                <button onclick="ui.switchView('dashboard-view')" class="text-slate-400 hover:text-slate-600 font-bold transition flex items-center justify-center gap-2 mx-auto">
+                    <i class="fa-solid fa-arrow-left-long"></i> 返回前台列表
+                </button>
+            </div>
         </div>
 
-        <!-- 狀態: 新增/編輯轉址 (獨立頁面) -->
-        <div id="create-view" class="hidden">
-            <!-- 頁面標題與返回 -->
-            <div class="flex items-center gap-4 mb-6">
-                <button onclick="ui.switchView('admin-dashboard-view')" class="w-10 h-10 bg-white rounded-full text-gray-500 shadow-sm hover:bg-gray-100 flex items-center justify-center transition">
-                    <i class="fa-solid fa-arrow-left"></i>
+        <!-- 狀態: 新增/編輯 (現代化表單) -->
+        <div id="create-view" class="hidden max-w-3xl mx-auto">
+            <div class="flex items-center gap-6 mb-8">
+                <button onclick="ui.switchView('admin-dashboard-view')" class="w-12 h-12 glass-card rounded-2xl text-slate-400 hover:text-indigo-600 flex items-center justify-center transition">
+                    <i class="fa-solid fa-chevron-left"></i>
                 </button>
-                <h2 class="text-2xl font-bold text-gray-700" id="form-title">新增轉址</h2>
+                <h2 class="text-3xl font-black text-slate-800" id="form-title">轉址設定</h2>
             </div>
 
-            <div class="bg-white p-6 rounded-3xl card-shadow border-2 border-pink-100">
-                <form id="create-form" class="space-y-4">
-                    <!-- 隱藏欄位：分辨是新增還是編輯 -->
+            <div class="glass-card p-8 md:p-10 rounded-[2.5rem]">
+                <form id="create-form" class="space-y-6">
                     <input type="hidden" id="inp-mode" value="create"> 
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-600 mb-1">網站名稱</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-bold text-slate-600 ml-1">顯示標題</label>
                             <input type="text" id="inp-name" placeholder="輸入網址後自動抓取..." 
-                                class="w-full bg-gray-50 border-2 border-gray-100 rounded-xl px-4 py-2 focus:outline-none focus:border-pink-300 transition">
+                                class="w-full bg-slate-50/50 border-2 border-slate-100 rounded-2xl px-5 py-3 focus:outline-none focus:border-indigo-300 transition text-slate-700">
                         </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-600 mb-1">連結 ID</label>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-bold text-slate-600 ml-1">自訂 ID (選填)</label>
                             <div class="flex gap-2">
-                                <input type="text" id="inp-id" placeholder="自訂1-6碼，留空隨機" maxlength="6"
-                                    class="w-full bg-gray-50 border-2 border-gray-100 rounded-xl px-4 py-2 focus:outline-none focus:border-pink-300 transition uppercase">
-                                <button type="button" onclick="app.generateRandomId()" class="bg-yellow-100 text-yellow-600 px-3 rounded-xl hover:bg-yellow-200" title="隨機生成">
+                                <input type="text" id="inp-id" placeholder="1-6 碼英數" maxlength="6"
+                                    class="w-full bg-slate-50/50 border-2 border-slate-100 rounded-2xl px-5 py-3 focus:outline-none focus:border-indigo-300 transition uppercase font-mono tracking-widest">
+                                <button type="button" onclick="app.generateRandomId()" class="bg-slate-100 text-slate-500 px-4 rounded-2xl hover:bg-slate-200 transition" title="隨機生成">
                                     <i class="fa-solid fa-dice"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-bold text-gray-600 mb-1">目標網址</label>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-600 ml-1">目標網址 (Destination URL)</label>
                         <input type="url" id="inp-url" placeholder="https://..." required onblur="app.fetchWebTitle()"
-                            class="w-full bg-gray-50 border-2 border-gray-100 rounded-xl px-4 py-2 focus:outline-none focus:border-pink-300 transition">
+                            class="w-full bg-slate-50/50 border-2 border-slate-100 rounded-2xl px-5 py-3 focus:outline-none focus:border-indigo-300 transition">
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-bold text-gray-600 mb-1">備註說明</label>
-                        <input type="text" id="inp-note" placeholder="給訪客的一句話..." 
-                            class="w-full bg-gray-50 border-2 border-gray-100 rounded-xl px-4 py-2 focus:outline-none focus:border-pink-300 transition">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-600 ml-1">補充說明/備註</label>
+                        <input type="text" id="inp-note" placeholder="例如：這是一個參考資料的網址..." 
+                            class="w-full bg-slate-50/50 border-2 border-slate-100 rounded-2xl px-5 py-3 focus:outline-none focus:border-indigo-300 transition">
                     </div>
 
-                    <div class="bg-gray-50 p-4 rounded-xl flex items-center justify-between">
+                    <div class="bg-indigo-50/30 p-6 rounded-3xl flex items-center justify-between border border-indigo-50">
                         <div>
-                            <span class="block text-sm font-bold text-gray-700">在前台顯示</span>
-                            <span class="text-xs text-gray-400">關閉後僅能透過網址訪問</span>
+                            <span class="block text-base font-bold text-slate-800">在首頁公開顯示</span>
+                            <span class="text-xs text-indigo-400 font-medium">關閉後僅能透過直接連結存取</span>
                         </div>
-                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                            <input type="checkbox" name="toggle" id="inp-visible" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 checked:right-0 checked:border-pink-400"/>
-                            <label for="inp-visible" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                        </div>
+                        <label class="flex items-center cursor-pointer">
+                            <div class="relative">
+                                <input type="checkbox" id="inp-visible" class="sr-only">
+                                <div class="toggle-bg block bg-slate-200 w-14 h-8 rounded-full"></div>
+                                <div class="toggle-dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full shadow-sm"></div>
+                            </div>
+                        </label>
                     </div>
 
-                    <div class="pt-4 flex gap-3">
-                        <button type="button" onclick="ui.switchView('admin-dashboard-view')" class="flex-1 bg-gray-100 text-gray-500 py-3 rounded-2xl font-bold hover:bg-gray-200 transition">
-                            取消
+                    <div class="pt-6 flex flex-col md:flex-row gap-4">
+                        <button type="button" onclick="ui.switchView('admin-dashboard-view')" class="flex-1 bg-slate-100 text-slate-500 py-4 rounded-2xl font-bold hover:bg-slate-200 transition order-2 md:order-1">
+                            取消返回
                         </button>
-                        <button type="submit" id="btn-create" class="flex-[2] bg-pink-400 text-white py-3 rounded-2xl font-bold btn-cute hover:bg-pink-500 flex justify-center items-center gap-2">
-                            <span>儲存設定</span>
+                        <button type="submit" id="btn-create" class="flex-[2] bg-indigo-600 text-white py-4 rounded-2xl font-bold btn-modern flex justify-center items-center gap-2 order-1 md:order-2">
+                            <span>儲存轉址資訊</span>
                         </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- 狀態: 轉址倒數頁面 -->
-        <div id="redirect-view" class="hidden fixed inset-0 z-50 bg-white flex flex-col items-center justify-center p-6">
-            <div class="max-w-md w-full text-center">
-                <h1 id="redirect-name" class="text-3xl font-bold text-gray-800 mb-2">網站名稱</h1>
-                <p id="redirect-note" class="text-gray-500 mb-8 bg-gray-50 py-2 px-4 rounded-lg inline-block">備註資訊</p>
+        <!-- 狀態: 轉址倒數 -->
+        <div id="redirect-view" class="hidden fixed inset-0 z-50 bg-white flex flex-col items-center justify-center p-6 text-center">
+            <div class="max-w-md w-full animate-fade-in">
+                <div class="mb-10 inline-block relative">
+                    <div class="w-36 h-36 border-8 border-indigo-50 rounded-full flex items-center justify-center">
+                         <span class="text-7xl font-black text-indigo-600" id="countdown">5</span>
+                    </div>
+                </div>
+                
+                <h1 id="redirect-name" class="text-3xl font-black text-slate-800 mb-3">網站標題</h1>
+                <p id="redirect-note" class="text-slate-400 mb-10 bg-slate-50 px-6 py-2 rounded-full inline-block font-medium">正在準備為您跳轉...</p>
 
-                <div class="mb-8">
-                    <div class="text-6xl font-black text-pink-400 font-mono" id="countdown">5</div>
-                    <div class="text-sm text-gray-400 mt-2">秒後自動跳轉</div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-8 flex items-center justify-center text-sm text-slate-400 font-mono">
+                    <i class="fa-solid fa-link mr-2"></i>
+                    <span class="truncate max-w-[250px]" id="redirect-url">https://...</span>
                 </div>
 
-                <div class="bg-gray-100 rounded-xl p-3 mb-6 flex items-center justify-between text-sm text-gray-500 truncate">
-                    <span class="truncate px-2" id="redirect-url">https://...</span>
-                </div>
-
-                <button id="btn-skip" class="w-full bg-blue-500 text-white py-3 rounded-2xl font-bold btn-cute hover:bg-blue-600 shadow-lg shadow-blue-200">
-                    立即前往 <i class="fa-solid fa-arrow-right ml-1"></i>
+                <button id="btn-skip" class="w-full bg-indigo-600 text-white py-5 rounded-[1.5rem] font-bold btn-modern shadow-xl shadow-indigo-100 text-lg flex items-center justify-center gap-2">
+                    立即前往網站 <i class="fa-solid fa-chevron-right"></i>
                 </button>
             </div>
         </div>
     </main>
 
     <!-- 頁尾 -->
-    <footer class="w-full text-center text-sm text-gray-400 pb-6">
-        <p>
-            Made by <a href="https://kentxchang.blogspot.tw" target="_blank" class="footer-link font-bold">阿剛老師</a>
-            <span class="mx-2 text-gray-300">|</span>
-            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW" target="_blank" title="創用 CC 姓名標示-非商業性-相同方式分享 4.0 國際 授權條款" class="hover:text-gray-600 transition">
-                <i class="fa-brands fa-creative-commons"></i> 姓名標示-非商業性
-            </a>
-        </p>
-    </footer>
-
-    <!-- Modal: 設定 (隱藏進入點，但保留代碼結構以防未來需要) -->
-    <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="ui.closeModal('settingsModal')"></div>
-        <div class="bg-white rounded-3xl w-full max-w-lg p-6 relative z-10 card-shadow">
-            <button onclick="ui.closeModal('settingsModal')" class="absolute top-4 right-4 text-gray-300 hover:text-gray-500">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-            
-            <h3 class="text-xl font-bold text-gray-700 mb-4"><i class="fa-solid fa-database text-pink-500"></i> Firebase 設定</h3>
-            
-            <p class="text-sm text-gray-500 mb-2">請貼上您的 <code>firebaseConfig</code> 物件內容 (不含大括號)：</p>
-            <textarea id="config-input" class="w-full h-40 bg-gray-50 border-2 border-gray-100 rounded-xl p-3 font-mono text-xs focus:outline-none focus:border-pink-300 resize-none" placeholder='apiKey: "AIza...",&#10;authDomain: "...",&#10;projectId: "...",&#10;storageBucket: "...",&#10;messagingSenderId: "...",&#10;appId: "..."'></textarea>
-            
-            <div class="flex gap-2 mt-4">
-                <button onclick="configManager.saveFromUI()" class="flex-1 bg-pink-400 text-white py-2 rounded-xl font-bold hover:bg-pink-500 transition">
-                    儲存並連線
-                </button>
-                <button onclick="configManager.reset()" class="px-4 border-2 border-red-100 text-red-400 rounded-xl font-bold hover:bg-red-50 hover:text-red-500 transition" title="清除設定">
-                    重置
-                </button>
+    <footer class="w-full border-t border-slate-100 bg-white/50 py-10 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-slate-400">
+            <div class="font-medium">
+                Made by <a href="https://kentxchang.blogspot.tw" target="_blank" class="text-indigo-600 font-bold hover:underline">阿剛老師</a>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW" target="_blank" class="flex items-center gap-2 hover:text-slate-600 transition">
+                    <i class="fa-brands fa-creative-commons text-xl"></i> 
+                    <span class="hidden sm:inline">CC 姓名標示-非商業性-相同方式分享 4.0 國際</span>
+                    <span class="sm:hidden">CC BY-NC-SA 4.0</span>
+                </a>
             </div>
         </div>
-    </div>
+    </footer>
 
     <!-- Modal: QR Code -->
     <div id="qrModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="ui.closeModal('qrModal')"></div>
-        <div class="bg-white rounded-3xl w-full max-w-sm p-8 relative z-10 card-shadow text-center">
-            <button onclick="ui.closeModal('qrModal')" class="absolute top-4 right-4 text-gray-300 hover:text-gray-500">
+        <div class="absolute inset-0 bg-slate-900/30 backdrop-blur-sm" onclick="ui.closeModal('qrModal')"></div>
+        <div class="glass-card rounded-[2.5rem] w-full max-w-sm p-10 relative z-10 text-center animate-fade-in">
+            <button onclick="ui.closeModal('qrModal')" class="absolute top-6 right-6 text-slate-300 hover:text-slate-500 transition">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
             
-            <h3 class="text-xl font-bold text-gray-700 mb-2">連結 QR Code</h3>
-            <p id="qr-name" class="text-sm text-pink-500 font-bold mb-4 truncate">連結名稱</p>
+            <h3 class="text-2xl font-bold text-slate-800 mb-2">QR Code 分享</h3>
+            <p id="qr-name" class="text-indigo-600 font-bold mb-8 truncate px-4">連結名稱</p>
             
-            <div class="bg-white p-2 rounded-xl border-2 border-gray-100 inline-block mb-4">
-                <img id="qr-img" src="" alt="QR Code" class="w-48 h-48 object-contain">
+            <div class="bg-white p-4 rounded-3xl shadow-sm inline-block mb-8 border border-slate-100">
+                <img id="qr-img" src="" alt="QR Code" class="w-52 h-52 object-contain">
             </div>
             
-            <p class="text-xs text-gray-400 mb-4">掃描即可開啟網頁</p>
-            
-            <button onclick="ui.closeModal('qrModal')" class="w-full bg-gray-100 text-gray-500 py-2 rounded-xl font-bold hover:bg-gray-200 transition">
+            <button onclick="ui.closeModal('qrModal')" class="w-full bg-slate-100 text-slate-600 py-4 rounded-2xl font-bold hover:bg-slate-200 transition">
                 關閉
             </button>
         </div>
     </div>
 
-    <!-- Modal: 說明 (Help) -->
+    <!-- Modal: 說明 (還原原始版內容) -->
     <div id="helpModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="ui.closeModal('helpModal')"></div>
-        <div class="bg-white rounded-3xl w-full max-w-2xl p-6 relative z-10 card-shadow max-h-[90vh] overflow-y-auto">
-            <button onclick="ui.closeModal('helpModal')" class="absolute top-4 right-4 text-gray-300 hover:text-gray-500">
+        <div class="absolute inset-0 bg-slate-900/30 backdrop-blur-sm" onclick="ui.closeModal('helpModal')"></div>
+        <div class="glass-card rounded-[2.5rem] w-full max-w-2xl p-8 md:p-10 relative z-10 max-h-[90vh] overflow-y-auto">
+            <button onclick="ui.closeModal('helpModal')" class="absolute top-6 right-6 text-slate-300 hover:text-slate-500">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
             
-            <h3 class="text-2xl font-bold text-gray-700 mb-4 border-b pb-2">Firebase 設定步驟教學</h3>
+            <h3 class="text-2xl font-bold text-slate-800 mb-6 border-b border-slate-100 pb-4">Firebase 設定步驟教學</h3>
             
-            <div class="space-y-6 text-sm text-gray-600">
+            <div class="space-y-6 text-sm text-slate-600">
                 
                 <!-- Step 1 -->
                 <div>
-                    <h4 class="font-bold text-gray-800 text-base mb-2 flex items-center">
+                    <h4 class="font-bold text-slate-800 text-base mb-2 flex items-center">
                         <span class="step-circle">1</span> 建立專案與取得設定
                     </h4>
                     <ol class="list-decimal list-inside ml-8 space-y-1">
-                        <li>前往 <a href="https://console.firebase.google.com/" target="_blank" class="text-blue-500 underline">Firebase Console</a>，點擊「新增專案」。</li>
+                        <li>前往 <a href="https://console.firebase.google.com/" target="_blank" class="text-indigo-600 underline">Firebase Console</a>，點擊「新增專案」。</li>
                         <li>進入專案後，在總覽頁面點擊「<i class="fa-solid fa-code"></i> Web」圖示新增應用程式。</li>
                         <li>輸入名稱後註冊，複製出現的 <code>firebaseConfig</code> 內容 (即 <code>apiKey</code> 到 <code>appId</code> 之間)。</li>
                     </ol>
@@ -374,7 +384,7 @@
 
                 <!-- Step 2 -->
                 <div>
-                    <h4 class="font-bold text-gray-800 text-base mb-2 flex items-center">
+                    <h4 class="font-bold text-slate-800 text-base mb-2 flex items-center">
                         <span class="step-circle">2</span> 開啟資料庫 (Firestore)
                     </h4>
                     <ol class="list-decimal list-inside ml-8 space-y-1">
@@ -386,7 +396,7 @@
 
                 <!-- Step 3 -->
                 <div>
-                    <h4 class="font-bold text-gray-800 text-base mb-2 flex items-center">
+                    <h4 class="font-bold text-slate-800 text-base mb-2 flex items-center">
                         <span class="step-circle">3</span> 開啟匿名驗證 (Auth)
                     </h4>
                     <ol class="list-decimal list-inside ml-8 space-y-1">
@@ -397,14 +407,13 @@
                 </div>
 
                 <!-- Step 4 -->
-                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                    <h4 class="font-bold text-blue-700 text-base mb-2 flex items-center">
-                        <span class="step-circle bg-blue-200 text-blue-600">4</span> 如何套用設定 (寫入原始碼)
+                <div class="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100">
+                    <h4 class="font-bold text-indigo-700 text-base mb-2 flex items-center">
+                        <span class="step-circle bg-indigo-200 text-indigo-600">4</span> 如何套用設定 (寫入原始碼)
                     </h4>
-                    
                     <div>
                         <p class="mb-2">若您下載了 <code>index.html</code> 檔案，請使用文字編輯器開啟，搜尋關鍵字 <code>configManager</code> 或 <code>defaultConfig</code>。</p>
-                        <div class="bg-gray-800 text-gray-200 p-3 rounded-lg font-mono text-xs overflow-x-auto">
+                        <div class="bg-slate-800 text-slate-200 p-4 rounded-xl font-mono text-xs overflow-x-auto leading-relaxed shadow-inner">
                             // 找到這段程式碼並修改引號內容：<br>
                             defaultConfig: {<br>
                             &nbsp;&nbsp;apiKey: "貼上您的 API Key",<br>
@@ -413,18 +422,18 @@
                             &nbsp;&nbsp;...<br>
                             }
                         </div>
-                        <p class="mt-2 text-xs text-gray-500">修改完成後儲存檔案，再次開啟網頁即可使用。</p>
+                        <p class="mt-2 text-xs text-slate-500">修改完成後儲存檔案，再次開啟網頁即可使用。</p>
                     </div>
                 </div>
 
                 <!-- Step 5 (Security Rules) -->
                 <div>
-                    <h4 class="font-bold text-gray-800 text-base mb-2 flex items-center">
+                    <h4 class="font-bold text-slate-800 text-base mb-2 flex items-center">
                         <span class="step-circle">5</span> 設定資料庫安全規則 (Rules)
                     </h4>
                     <p class="ml-8 mb-2">請前往 <strong>Firestore Database > Rules</strong> 分頁，將內容替換為以下程式碼，並點擊 <strong>Publish</strong>。</p>
                     <div class="ml-8 relative group">
-                        <textarea id="rules-code" class="w-full h-32 bg-gray-800 text-gray-200 p-3 rounded-lg font-mono text-xs focus:outline-none resize-none" readonly>rules_version = '2';
+                        <pre id="rules-code" class="w-full h-32 bg-slate-800 text-indigo-200 p-4 rounded-xl font-mono text-xs overflow-x-auto shadow-inner leading-relaxed" readonly>rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /links/{document=**} {
@@ -432,18 +441,18 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
   }
-}</textarea>
-                        <button onclick="ui.copyRules()" class="absolute top-2 right-2 bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded text-xs transition backdrop-blur-sm border border-white/20">
+}</pre>
+                        <button onclick="ui.copyRules()" class="absolute top-2 right-2 bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg text-xs transition backdrop-blur-sm border border-white/10 font-bold">
                             <i class="fa-regular fa-copy"></i> 複製規則
                         </button>
                     </div>
-                    <p class="ml-8 mt-2 text-xs text-gray-400">說明：此規則允許所有人讀取(轉址)，但只有透過程式自動登入(匿名)的使用者才能寫入資料，避免惡意攻擊。</p>
+                    <p class="ml-8 mt-2 text-xs text-slate-400 leading-relaxed">說明：此規則允許所有人讀取(轉址)，但只有透過程式自動登入(匿名)的使用者才能寫入資料，避免惡意攻擊。</p>
                 </div>
 
             </div>
             
-            <div class="mt-6 text-center">
-                <button onclick="ui.closeModal('helpModal')" class="bg-gray-200 text-gray-600 px-6 py-2 rounded-full font-bold hover:bg-gray-300 transition">
+            <div class="mt-8 text-center">
+                <button onclick="ui.closeModal('helpModal')" class="bg-slate-200 text-slate-600 px-10 py-3 rounded-2xl font-bold hover:bg-slate-300 transition">
                     我學會了！
                 </button>
             </div>
@@ -451,74 +460,34 @@ service cloud.firestore {
     </div>
 
     <!-- Toast 通知 -->
-    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-xl z-50 hidden transition-opacity duration-300 text-sm font-bold flex items-center gap-2">
-        <i class="fa-solid fa-circle-info"></i> <span id="toast-msg">訊息</span>
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-3xl shadow-2xl z-50 hidden transition-all duration-300 text-sm font-bold flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-indigo-400"></i> <span id="toast-msg">操作成功</span>
     </div>
 
-    <!-- Scripts: Firebase Modular SDK -->
+    <!-- Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getFirestore, collection, addDoc, doc, getDoc, setDoc, onSnapshot, updateDoc, deleteDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-        // 全域變數
         let db, auth;
-        let isConfigured = false;
 
-        // --- 1. 設定管理 (Config Manager) ---
         const configManager = {
-            STORAGE_KEY: 'my_firebase_config',
+            STORAGE_KEY: 'indigo_firebase_config_v2',
             defaultConfig: {
-  apiKey: "AIzaSyBvSFttNc4HAyNpElFiF0xE6B9f85B7yTE",
-  authDomain: "shorturl-75278.firebaseapp.com",
-  projectId: "shorturl-75278",
-  storageBucket: "shorturl-75278.firebasestorage.app",
-  messagingSenderId: "906593298819",
-  appId: "1:906593298819:web:c3788d8322a7c7bbad6eb6"
+                apiKey: "AIzaSyBvSFttNc4HAyNpElFiF0xE6B9f85B7yTE",
+                authDomain: "shorturl-75278.firebaseapp.com",
+                projectId: "shorturl-75278",
+                storageBucket: "shorturl-75278.firebasestorage.app",
+                messagingSenderId: "906593298819",
+                appId: "1:906593298819:web:c3788d8322a7c7bbad6eb6"
             },
             init: function() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const configParam = urlParams.get('config');
-
-                if (configParam) {
-                    try {
-                        const decodedStr = atob(configParam);
-                        const configObj = JSON.parse(decodedStr);
-                        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(configObj));
-                        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                        window.history.replaceState({path: newUrl}, '', newUrl);
-                        ui.showToast('已從連結匯入設定！');
-                        return configObj;
-                    } catch (e) { console.error(e); ui.showToast('設定參數無效'); }
-                }
-                const localConfig = localStorage.getItem(this.STORAGE_KEY);
-                return localConfig ? JSON.parse(localConfig) : this.defaultConfig;
-            },
-            saveFromUI: function() {
-                const input = document.getElementById('config-input').value;
-                const keys = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
-                const newConfig = {};
-                let validCount = 0;
-                keys.forEach(key => {
-                    const regex = new RegExp(`${key}\\s*:\\s*["']([^"']+)["']`);
-                    const match = input.match(regex);
-                    if (match && match[1]) { newConfig[key] = match[1]; validCount++; }
-                });
-                if (validCount >= 5) {
-                    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(newConfig));
-                    ui.showToast('設定已儲存，正在重新整理...');
-                    setTimeout(() => location.reload(), 1000);
-                } else { ui.showToast('無法解析設定，請確保複製格式正確'); }
-            },
-            reset: function() {
-                if(confirm('確定要清除所有設定並重置嗎？')) {
-                    localStorage.removeItem(this.STORAGE_KEY);
-                    location.reload();
-                }
+                const local = localStorage.getItem(this.STORAGE_KEY);
+                return local ? JSON.parse(local) : this.defaultConfig;
             }
         };
 
-        // --- 2. UI 工具 (UI Utilities) ---
         const ui = {
             showToast: (msg) => {
                 const el = document.getElementById('toast');
@@ -526,19 +495,13 @@ service cloud.firestore {
                 el.classList.remove('hidden');
                 setTimeout(() => el.classList.add('hidden'), 3000);
             },
-            openModal: (id) => {
-                const el = document.getElementById(id);
-                el.classList.remove('hidden');
-                el.firstElementChild.nextElementSibling.classList.add('modal-enter-active');
-            },
-            closeModal: (id) => {
-                document.getElementById(id).classList.add('hidden');
-            },
+            openModal: (id) => document.getElementById(id).classList.remove('hidden'),
+            closeModal: (id) => document.getElementById(id).classList.add('hidden'),
             switchView: (viewId) => {
-                ['loading-view', 'setup-view', 'dashboard-view', 'redirect-view', 'create-view', 'admin-login-view', 'admin-dashboard-view'].forEach(id => {
-                    document.getElementById(id).classList.add('hidden');
-                });
+                const views = ['loading-view', 'setup-view', 'dashboard-view', 'redirect-view', 'create-view', 'admin-login-view', 'admin-dashboard-view'];
+                views.forEach(v => document.getElementById(v).classList.add('hidden'));
                 document.getElementById(viewId).classList.remove('hidden');
+                window.scrollTo(0,0);
             },
             checkAdminLogin: () => {
                 if (app.isAdmin) {
@@ -550,381 +513,259 @@ service cloud.firestore {
             },
             showQRCode: (url, name) => {
                 document.getElementById('qr-name').innerText = name;
-                // 使用公開 API 生成 QR Code
-                const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
-                document.getElementById('qr-img').src = apiUrl;
+                document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}&color=4f46e5&margin=1`;
                 ui.openModal('qrModal');
             },
             copyRules: () => {
-                const input = document.getElementById('rules-code');
-                input.select();
+                const el = document.getElementById('rules-code');
+                const range = document.createRange();
+                range.selectNode(el);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
                 document.execCommand('copy');
-                ui.showToast('規則已複製！請前往 Firebase Console 貼上');
+                window.getSelection().removeAllRanges();
+                ui.showToast('規則代碼已複製');
             }
         };
 
-        window.ui = ui;
-        window.configManager = configManager;
-
-        // --- 3. 核心邏輯 (App Core) ---
         const app = {
             isAdmin: false,
-            allLinks: [], // 儲存所有連結資料
+            allLinks: [],
 
             init: async function() {
-                ui.switchView('loading-view');
                 const config = configManager.init();
-
-                if (config.apiKey === 'demo') {
+                if (!config.apiKey || config.apiKey.includes('貼上')) {
                     ui.switchView('setup-view');
                     return;
                 }
-
                 try {
                     const firebaseApp = initializeApp(config);
                     db = getFirestore(firebaseApp);
                     auth = getAuth(firebaseApp);
                     await signInAnonymously(auth);
-                    isConfigured = true;
-
+                    
                     const urlParams = new URLSearchParams(window.location.search);
                     const linkId = urlParams.get('id');
-
                     if (linkId) {
                         this.startRedirectFlow(linkId);
                     } else {
                         ui.switchView('dashboard-view');
                         this.startDataListener();
                     }
-
-                } catch (error) {
-                    console.error("Firebase Init Error", error);
-                    ui.showToast('Firebase 連線失敗');
+                } catch (e) {
                     ui.switchView('setup-view');
                 }
             },
 
-            // --- 自動抓取網站標題 ---
-            fetchWebTitle: async function() {
-                const urlVal = document.getElementById('inp-url').value;
-                const nameInput = document.getElementById('inp-name');
-                
-                // 如果網址為空，或名稱已經有值，就不自動抓取
-                if (!urlVal || nameInput.value.trim() !== "") return;
-
-                try {
-                    // 先給一個預設值 (網域)，讓使用者有回饋感
-                    const urlObj = new URL(urlVal);
-                    nameInput.value = "讀取中...";
-                    nameInput.disabled = true; // 暫時鎖定避免衝突
-
-                    // 使用 AllOrigins Proxy 繞過 CORS 抓取 Title
-                    const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(urlVal)}`);
-                    const data = await response.json();
-                    
-                    if (data.contents) {
-                        const doc = new DOMParser().parseFromString(data.contents, "text/html");
-                        const title = doc.querySelector('title')?.innerText;
-                        if (title) {
-                            nameInput.value = title.trim();
-                        } else {
-                            // 沒抓到 Title，用網域
-                            nameInput.value = urlObj.hostname;
-                        }
-                    } else {
-                        nameInput.value = urlObj.hostname;
-                    }
-                } catch (e) {
-                    console.error("抓取標題失敗", e);
-                    // 失敗時回退到網域名稱
-                    try { nameInput.value = new URL(urlVal).hostname; } catch(err) { nameInput.value = ""; }
-                } finally {
-                    nameInput.disabled = false;
-                    // 如果還是空的，且沒有 focus，才顯示 Placeholder
-                    if (!nameInput.value) nameInput.placeholder = "例如：Google";
-                }
-            },
-
-            // --- 驗證管理員 ---
-            verifyAdmin: function() {
-                const pwd = document.getElementById('admin-password').value;
-                if (pwd === 'tpet') {
-                    this.isAdmin = true;
-                    document.getElementById('admin-password').value = '';
-                    ui.showToast('登入成功');
-                    ui.switchView('admin-dashboard-view');
-                    this.renderAdminList();
-                } else {
-                    ui.showToast('密碼錯誤');
-                }
-            },
-
-            // --- 資料監聽 (統一) ---
             startDataListener: function() {
-                const q = collection(db, "links"); 
-                onSnapshot(q, (snapshot) => {
+                const q = collection(db, "links");
+                onSnapshot(q, (snap) => {
                     this.allLinks = [];
-                    snapshot.forEach(doc => this.allLinks.push({id: doc.id, ...doc.data()}));
-                    // 排序
-                    this.allLinks.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                    
+                    snap.forEach(d => this.allLinks.push({id: d.id, ...d.data()}));
+                    this.allLinks.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
                     this.renderPublicList();
                     if (this.isAdmin) this.renderAdminList();
                 });
             },
 
-            // --- 渲染前台列表 (搜尋 + 過濾公開) ---
+            fetchWebTitle: async function() {
+                const url = document.getElementById('inp-url').value;
+                const nameInp = document.getElementById('inp-name');
+                if (!url || nameInp.value) return;
+                nameInp.value = "偵測中...";
+                try {
+                    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                    const data = await res.json();
+                    if (data.contents) {
+                        const docObj = new DOMParser().parseFromString(data.contents, "text/html");
+                        const title = docObj.querySelector('title')?.innerText;
+                        nameInp.value = title ? title.trim().substring(0, 50) : new URL(url).hostname;
+                    }
+                } catch(e) { nameInp.value = new URL(url).hostname; }
+            },
+
+            verifyAdmin: function() {
+                const pwd = document.getElementById('admin-password').value;
+                if (pwd === 'tpet') {
+                    this.isAdmin = true;
+                    document.getElementById('admin-password').value = '';
+                    document.getElementById('admin-btn-text').innerText = '管理控制台';
+                    ui.showToast('身分驗證成功');
+                    ui.switchView('admin-dashboard-view');
+                    this.renderAdminList();
+                } else { ui.showToast('密碼錯誤'); }
+            },
+
             renderPublicList: function() {
                 const listEl = document.getElementById('links-list');
-                const countEl = document.getElementById('link-count');
                 const keyword = document.getElementById('search-input').value.toLowerCase();
-
-                // 過濾：公開且符合關鍵字
-                const filtered = this.allLinks.filter(link => {
-                    const isVisible = link.isVisible !== false; // 預設 true
-                    const matchSearch = (link.name || '').toLowerCase().includes(keyword) || 
-                                        (link.url || '').toLowerCase().includes(keyword) || 
-                                        (link.note || '').toLowerCase().includes(keyword);
-                    return isVisible && matchSearch;
+                const filtered = this.allLinks.filter(l => {
+                    const visible = l.isVisible !== false;
+                    const match = (l.name||'').toLowerCase().includes(keyword) || (l.note||'').toLowerCase().includes(keyword);
+                    return visible && match;
                 });
 
-                countEl.innerText = `${filtered.length} 個連結`;
+                document.getElementById('link-count').innerText = filtered.length;
                 listEl.innerHTML = '';
 
-                if (filtered.length === 0) {
-                    listEl.innerHTML = `
-                        <div class="text-center text-gray-400 py-10">
-                            <i class="fa-solid fa-ghost text-4xl mb-3 opacity-30"></i>
-                            <p>沒有符合條件的連結</p>
-                        </div>`;
+                if (!filtered.length) {
+                    listEl.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400 font-medium animate-fade-in">目前沒有公開的捷徑連結</div>`;
                     return;
                 }
 
                 filtered.forEach(link => {
-                    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${link.id}`;
+                    const fullUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${link.id}`;
                     listEl.innerHTML += `
-                        <div class="bg-white p-4 rounded-2xl border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
-                            <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-pink-400 font-bold shrink-0 overflow-hidden">
-                                <i class="fa-solid fa-link"></i>
-                            </div>
-                            <div class="flex-grow min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <h4 class="font-bold text-gray-700 truncate">${link.name}</h4>
-                                    <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-md font-mono">${link.id}</span>
+                        <div class="glass-card p-6 rounded-[2rem] border border-white hover:border-indigo-100 hover:shadow-xl transition-all group animate-fade-in">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="bg-indigo-50 text-indigo-500 w-12 h-12 rounded-2xl flex items-center justify-center text-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors shadow-sm">
+                                    <i class="fa-solid fa-link"></i>
                                 </div>
-                                <p class="text-xs text-gray-400 truncate">${link.note || link.url}</p>
+                                <span class="bg-slate-100 text-slate-400 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tight">${link.id}</span>
                             </div>
-                            <div class="flex gap-2">
-                                <button onclick="app.copyLink('${url}')" class="text-gray-400 hover:text-pink-500 p-2 rounded-full transition" title="複製連結">
-                                    <i class="fa-regular fa-copy"></i>
+                            <h4 class="font-bold text-slate-800 text-lg mb-2 truncate">${link.name}</h4>
+                            <p class="text-slate-400 text-sm mb-6 line-clamp-2 h-10 font-medium">${link.note || '無詳細說明'}</p>
+                            
+                            <div class="flex gap-2 border-t border-slate-50 pt-4">
+                                <button onclick="app.copyLink('${fullUrl}')" class="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-500 p-3 rounded-xl transition text-sm font-bold flex items-center justify-center gap-2">
+                                    <i class="fa-regular fa-copy"></i> 複製
                                 </button>
-                                <button onclick="ui.showQRCode('${url}', '${link.name}')" class="text-gray-400 hover:text-pink-500 p-2 rounded-full transition" title="QR Code">
+                                <button onclick="ui.showQRCode('${fullUrl}', '${link.name}')" class="bg-slate-50 hover:bg-slate-100 text-slate-500 p-3 rounded-xl transition text-sm font-bold flex items-center justify-center" title="QR Code">
                                     <i class="fa-solid fa-qrcode"></i>
                                 </button>
-                                <button onclick="window.open('${url}', '_blank')" class="text-blue-400 hover:bg-blue-50 p-2 rounded-full transition" title="前往網址">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                <button onclick="window.open('${fullUrl}', '_blank')" class="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-xl transition text-sm font-bold flex items-center justify-center" title="直接前往">
+                                    <i class="fa-solid fa-external-link"></i>
                                 </button>
                             </div>
                         </div>`;
                 });
             },
 
-            handleSearch: function() {
-                this.renderPublicList();
-            },
-
-            // --- 渲染後台列表 ---
             renderAdminList: function() {
                 const tbody = document.getElementById('admin-list-body');
                 tbody.innerHTML = '';
-
                 this.allLinks.forEach(link => {
-                    const isVisible = link.isVisible !== false;
-                    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${link.id}`;
-                    const row = `
-                        <tr class="bg-white border-b hover:bg-gray-50">
-                            <td class="px-4 py-3">
-                                <div class="font-bold text-gray-900">${link.name}</div>
-                                <div class="text-xs text-gray-400 font-mono">${link.id}</div>
+                    const visible = link.isVisible !== false;
+                    const fullUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${link.id}`;
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-indigo-50/10 transition-colors">
+                            <td class="px-6 py-5">
+                                <div class="font-bold text-slate-800">${link.name}</div>
+                                <div class="text-[10px] text-slate-400 font-mono">ID: ${link.id}</div>
                             </td>
-                            <td class="px-4 py-3 text-center">
-                                <span class="px-2 py-1 rounded-full text-xs font-bold ${isVisible ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-500'}">
-                                    ${isVisible ? '公開' : '隱藏'}
+                            <td class="px-6 py-5">
+                                <div class="text-xs text-indigo-400 truncate max-w-[200px] font-mono font-medium">${link.url}</div>
+                            </td>
+                            <td class="px-6 py-5 text-center">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${visible ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-400'}">
+                                    ${visible ? 'Public' : 'Private'}
                                 </span>
                             </td>
-                            <td class="px-4 py-3 text-center font-mono text-gray-600">
-                                ${link.clicks || 0}
+                            <td class="px-6 py-5 text-center font-mono text-slate-500 text-sm font-bold">${link.clicks || 0}</td>
+                            <td class="px-6 py-5 text-right space-x-1">
+                                <button onclick="app.copyLink('${fullUrl}')" class="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 hover:text-indigo-600 transition"><i class="fa-regular fa-copy"></i></button>
+                                <button onclick="app.prepareEdit('${link.id}')" class="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="app.deleteLink('${link.id}')" class="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 hover:bg-red-500 hover:text-white transition"><i class="fa-solid fa-trash-can"></i></button>
                             </td>
-                            <td class="px-4 py-3 text-right space-x-1">
-                                <button onclick="app.copyLink('${url}')" class="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200" title="複製">
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
-                                <button onclick="ui.showQRCode('${url}', '${link.name}')" class="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200" title="QR Code">
-                                    <i class="fa-solid fa-qrcode"></i>
-                                </button>
-                                <button onclick="app.toggleVisibility('${link.id}', ${isVisible})" class="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200">
-                                    ${isVisible ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>'}
-                                </button>
-                                <button onclick="app.prepareEdit('${link.id}')" class="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100">
-                                    編輯
-                                </button>
-                                <button onclick="app.deleteLink('${link.id}')" class="text-xs bg-red-50 text-red-600 px-2 py-1 rounded hover:bg-red-100">
-                                    刪除
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    tbody.innerHTML += row;
+                        </tr>`;
                 });
             },
 
-            // --- CRUD 操作 ---
             prepareCreate: function() {
-                document.getElementById('form-title').innerText = "新增轉址";
+                document.getElementById('form-title').innerText = "新增轉址規則";
                 document.getElementById('create-form').reset();
                 document.getElementById('inp-mode').value = 'create';
                 document.getElementById('inp-id').disabled = false;
-                document.getElementById('inp-visible').checked = true; // 預設公開
+                document.getElementById('inp-visible').checked = true;
                 ui.switchView('create-view');
             },
 
             prepareEdit: function(id) {
                 const link = this.allLinks.find(l => l.id === id);
                 if (!link) return;
-
-                document.getElementById('form-title').innerText = "編輯轉址";
+                document.getElementById('form-title').innerText = "編輯轉址規則";
                 document.getElementById('inp-mode').value = 'edit';
                 document.getElementById('inp-name').value = link.name;
                 document.getElementById('inp-url').value = link.url;
                 document.getElementById('inp-note').value = link.note || '';
                 document.getElementById('inp-id').value = link.id;
-                document.getElementById('inp-id').disabled = true; // ID 不可改
+                document.getElementById('inp-id').disabled = true;
                 document.getElementById('inp-visible').checked = link.isVisible !== false;
-
                 ui.switchView('create-view');
             },
 
-            toggleVisibility: async function(id, currentStatus) {
-                try {
-                    await updateDoc(doc(db, "links", id), { isVisible: !currentStatus });
-                    ui.showToast('狀態已更新');
-                } catch(e) { ui.showToast('更新失敗'); }
-            },
-
-            deleteLink: async function(id) {
-                if(confirm('確定要刪除這個連結嗎？此操作無法復原。')) {
-                    try {
-                        await deleteDoc(doc(db, "links", id));
-                        ui.showToast('連結已刪除');
-                    } catch(e) { ui.showToast('刪除失敗'); }
-                }
-            },
-
-            copyLink: function(url) {
-                navigator.clipboard.writeText(url).then(() => {
-                    ui.showToast('連結已複製到剪貼簿！');
-                }).catch(err => {
-                    ui.showToast('複製失敗');
-                });
-            },
-
-            // --- 表單提交 (新增/修改) ---
             submitForm: async function(e) {
                 e.preventDefault();
                 const btn = document.getElementById('btn-create');
-                const originalText = btn.innerHTML;
                 btn.disabled = true;
-                btn.innerHTML = '處理中...';
-
+                btn.innerHTML = '<div class="loader"></div>';
                 const mode = document.getElementById('inp-mode').value;
-                let name = document.getElementById('inp-name').value;
+                const name = document.getElementById('inp-name').value || new URL(document.getElementById('inp-url').value).hostname;
                 const url = document.getElementById('inp-url').value;
                 const note = document.getElementById('inp-note').value;
                 const isVisible = document.getElementById('inp-visible').checked;
-                let id = document.getElementById('inp-id').value.trim();
-
-                // 如果名稱為空 (使用者手速太快沒等到抓取，或是抓取失敗)，使用網域當名稱
-                if (!name.trim()) {
-                    try {
-                        name = new URL(url).hostname;
-                    } catch (e) {
-                        name = "未命名連結";
-                    }
-                }
-
-                if (!id) id = this.makeId(6);
+                let id = document.getElementById('inp-id').value.trim() || this.makeId(6);
 
                 try {
                     if (mode === 'create') {
-                        // 檢查 ID 是否重複
-                        const docSnap = await getDoc(doc(db, "links", id));
-                        if (docSnap.exists()) { throw new Error('此 ID 已存在'); }
-
-                        await setDoc(doc(db, "links", id), {
-                            name, url, note, isVisible,
-                            clicks: 0,
-                            createdAt: serverTimestamp()
-                        });
-                        ui.showToast('新增成功！');
+                        const s = await getDoc(doc(db, "links", id));
+                        if (s.exists()) throw new Error('此 ID 已被佔用');
+                        await setDoc(doc(db, "links", id), { name, url, note, isVisible, clicks: 0, createdAt: serverTimestamp() });
                     } else {
-                        // 編輯模式
-                        await updateDoc(doc(db, "links", id), {
-                            name, url, note, isVisible
-                        });
-                        ui.showToast('更新成功！');
+                        await updateDoc(doc(db, "links", id), { name, url, note, isVisible });
                     }
+                    ui.showToast('儲存成功');
                     ui.switchView('admin-dashboard-view');
-                } catch (err) {
-                    ui.showToast('失敗: ' + err.message);
-                } finally {
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
+                } catch(err) { ui.showToast(err.message); }
+                finally { btn.disabled = false; btn.innerText = '儲存轉址資訊'; }
+            },
+
+            deleteLink: async function(id) {
+                if (confirm('確定要刪除嗎？')) {
+                    await deleteDoc(doc(db, "links", id));
+                    ui.showToast('已移除');
                 }
             },
 
-            // --- 其他功能 ---
+            copyLink: (url) => {
+                const temp = document.createElement('input');
+                temp.value = url; document.body.appendChild(temp); temp.select();
+                document.execCommand('copy'); document.body.removeChild(temp);
+                ui.showToast('連結已複製');
+            },
+
             startRedirectFlow: async function(id) {
                 ui.switchView('redirect-view');
-                const docRef = doc(db, "links", id);
                 try {
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
+                    const snap = await getDoc(doc(db, "links", id));
+                    if (snap.exists()) {
+                        const data = snap.data();
                         document.getElementById('redirect-name').innerText = data.name;
-                        document.getElementById('redirect-note').innerText = data.note || "即將前往...";
                         document.getElementById('redirect-url').innerText = data.url;
-                        
-                        updateDoc(docRef, { clicks: increment(1) });
-
+                        updateDoc(doc(db, "links", id), { clicks: increment(1) });
                         document.getElementById('btn-skip').onclick = () => window.location.href = data.url;
-
                         let count = 5;
-                        const interval = setInterval(() => {
+                        const timer = setInterval(() => {
                             count--;
                             document.getElementById('countdown').innerText = count;
-                            if (count <= 0) { clearInterval(interval); window.location.href = data.url; }
+                            if (count <= 0) { clearInterval(timer); window.location.href = data.url; }
                         }, 1000);
-                    } else {
-                        document.getElementById('redirect-name').innerText = "連結無效";
-                        document.getElementById('btn-skip').classList.add('hidden');
-                    }
-                } catch (e) { console.error(e); }
+                    } else { document.getElementById('redirect-name').innerText = "連結無效"; }
+                } catch(e) { ui.showToast('存取失敗'); }
             },
-            makeId: (length) => {
-                let result = '';
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                for (let i = 0; i < length; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
-                return result;
+
+            makeId: (len) => {
+                const c = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+                let r = ''; for(let i=0; i<len; i++) r += c.charAt(Math.floor(Math.random()*c.length));
+                return r;
             },
-            generateRandomId: function() { document.getElementById('inp-id').value = this.makeId(6); }
+            generateRandomId: () => document.getElementById('inp-id').value = app.makeId(6),
+            handleSearch: () => app.renderPublicList()
         };
 
-        // 綁定表單
+        window.ui = ui; window.app = app;
         document.getElementById('create-form').onsubmit = (e) => app.submitForm(e);
-
-        window.app = app;
         app.init();
-
     </script>
 </body>
 </html>
